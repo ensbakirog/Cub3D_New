@@ -1,7 +1,7 @@
 #include "cub3D.h"
 #include <stddef.h>
-#include "minilibx/mlx.h"
-#include <stdlib.h> // delete
+#include "minilibx_MacOS/mlx.h"
+#include <stdlib.h>
 
 void color_control(t_data *data, int i, int j)
 {

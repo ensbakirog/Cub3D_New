@@ -1,0 +1,7 @@
+To-Do:
+
+- F and C color Maxint Minint control
+- F and C 3 number control
+- F and C just number and , control
+- F and C no space in number control
+- F and C no space between number and , control

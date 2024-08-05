@@ -1,11 +1,16 @@
 NAME	:= cub3D
 
-FLAGS	:= -Wall -Wextra -Werror #-I/path/minilibx/
-#MLXFLAG = -L./minilibx -lmlx -lXext -lX11 -lm
-LIBRARY := -Lminilibx_MacOS -lmlx -framework OpenGL -framework AppKit
+FLAGS	:= -Wall -Wextra -Werror
 
+LIB_MAC := -Lminilibx_MacOS -lmlx -framework OpenGL -framework AppKit
+MLX_MAC := ./minilibx_MacOS
+
+MLX_LIN := ./minilibx_Linux
+
+OS 		:= $(shell uname)
 
 CC		:= gcc
+MAKE	:= make
 RM		:= rm -rf
 
 SRC		:=	main.c\
@@ -50,7 +55,7 @@ LIBFT	= 	Libft/ft_atoi.c\
 GNL     := 	GNL/get_next_line.c\
 			GNL/get_next_line_utils.c
 
-OBJ		:= $(SRC:.cpp=.o)
+OBJ		:= $(SRC:.c=.o)
 
 RED		:= \033[31m
 GREEN	:= \033[32m
@@ -60,18 +65,24 @@ MAGENTA	:= \033[35m
 CYAN	:= \033[36m
 RESET	:= \033[0m
 
-CC_MSG		:= @printf "$(CYAN)$(CC)$(RESET) $(YELLOW)$(FLAGS)$(RESET) $(MAGENTA)$(OBJ)$(RESET) -o $(GREEN)$(NAME)$(RESET)\n"
-SUCCESS_MSG	:= @printf "$(GREEN)$(NAME) has been compiled$(RESET)\n"
-CLEAN_MSG 	:= printf "$(RED)Object files removed$(RESET)\n"
+CC_MSG_MAC	:= printf "$(CYAN)$(CC)$(RESET) $(YELLOW)$(FLAGS)$(RESET) $(MAGENTA)$(OBJ)$(RESET) $(LIB_MAC) -o $(GREEN)$(NAME)$(RESET)\n"
+SUCCESS_MSG	:= @printf "$(GREEN)$(NAME)$(RESET) has been compiled\n"
+CLEAN_MSG 	:= printf "$(RED)Object files$(RESET) removed\n"
 FCLEAN_MSG	:= printf "Executable $(RED)$(NAME)$(RESET) removed\n"
+
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(FLAGS) $(OBJ) $(LIBFT) $(GNL) $(LIBRARY) -g -o $(NAME)
-	$(CC_MSG)
+	@if [ "$(OS)" = "Darwin" ]; then \
+		$(MAKE) --directory=$(MLX_MAC); \
+		$(CC) $(FLAGS) $(OBJ) $(LIBFT) $(GNL) $(LIB_MAC) -o $(NAME); \
+		$(CC_MSG_MAC); \
+	elif [ "$(OS)" == "Linux" ]; then \
+		printf "Merhaba"; \
+	fi
 	$(SUCCESS_MSG)
 
-%.o: %.cpp
+%.o: %.c
 	@$(CC) $(FLAGS) -c $< -o $@
 
 clean:
@@ -79,6 +90,7 @@ clean:
 		$(RM) $(OBJ); \
 		$(CLEAN_MSG); \
 	fi
+	@make -C $(MLX_MAC) -s clean
 
 fclean: clean
 	@if [ -n "$(wildcard $(NAME))" ]; then \
